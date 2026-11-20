@@ -1,0 +1,33 @@
+from backend.app.models.entities import (
+    AdminUser,
+    Product,
+    Contact,
+    Inquiry,
+    Subscription,
+    SuppressionRecord,
+    Campaign,
+    CampaignRecipient,
+    EmailEvent,
+    ActivityLog,
+    ImportJob,
+    EmailTemplate,
+    ConsentEvent,
+    UnsubscribeToken,
+)
+
+__all__ = [
+    "AdminUser",
+    "Product",
+    "Contact",
+    "Inquiry",
+    "Subscription",
+    "SuppressionRecord",
+    "Campaign",
+    "CampaignRecipient",
+    "EmailEvent",
+    "ActivityLog",
+    "ImportJob",
+    "EmailTemplate",
+    "ConsentEvent",
+    "UnsubscribeToken",
+]
