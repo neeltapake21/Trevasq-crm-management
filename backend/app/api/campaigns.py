@@ -319,7 +319,7 @@ def send_test_email(
         raise HTTPException(status_code=404, detail="Campaign not found")
 
     recipient_email = test_email or current_user.email
-    email_adapter = get_email_adapter()
+    email_adapter = get_email_adapter(db=db)
 
     subj, html_body, text_body = render_personalized_email(
         subject_template=c.subject,

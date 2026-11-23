@@ -13,6 +13,7 @@ from backend.app.models.entities import (
     EmailTemplate,
     ConsentEvent,
     UnsubscribeToken,
+    SystemSetting,
 )
 
 __all__ = [
@@ -30,4 +31,5 @@ __all__ = [
     "EmailTemplate",
     "ConsentEvent",
     "UnsubscribeToken",
+    "SystemSetting",
 ]

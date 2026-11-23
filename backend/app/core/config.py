@@ -17,17 +17,17 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
     
     # Email settings
-    EMAIL_PROVIDER: str = "test"  # 'test', 'smtp', 'sendgrid', 'ses', 'mailgun'
-    EMAIL_TEST_MODE: bool = True
+    EMAIL_PROVIDER: str = "smtp"  # 'smtp', 'sendgrid', 'ses', 'mailgun', 'test'
+    EMAIL_TEST_MODE: bool = False
     EMAIL_FROM_ADDRESS: str = "marketing@trevasq.com"
     EMAIL_FROM_NAME: str = "TrevasQ Marketing"
     
-    # SMTP (if using SMTP)
-    SMTP_HOST: Optional[str] = "localhost"
-    SMTP_PORT: Optional[int] = 1025
+    # SMTP (defaulting to live SMTP)
+    SMTP_HOST: Optional[str] = "smtp.gmail.com"
+    SMTP_PORT: Optional[int] = 587
     SMTP_USERNAME: Optional[str] = None
     SMTP_PASSWORD: Optional[str] = None
-    SMTP_USE_TLS: bool = False
+    SMTP_USE_TLS: bool = True
     
     # Provider API keys (optional)
     SENDGRID_API_KEY: Optional[str] = None

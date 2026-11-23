@@ -28,7 +28,7 @@ def execute_campaign(db: Session, campaign_id: int) -> Dict[str, Any]:
 
     product = campaign.product
     now = datetime.now(timezone.utc)
-    email_adapter = get_email_adapter()
+    email_adapter = get_email_adapter(db=db)
 
     # Step 1: Find all candidate subscriptions for this product
     subscriptions = db.query(Subscription).filter(Subscription.product_id == product.id).all()

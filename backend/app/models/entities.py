@@ -232,3 +232,13 @@ class UnsubscribeToken(Base):
     used_at = Column(DateTime, nullable=True)
     
     contact = relationship("Contact", back_populates="unsubscribe_tokens")
+
+
+class SystemSetting(Base):
+    __tablename__ = "system_settings"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(100), unique=True, index=True, nullable=False)
+    value = Column(Text, nullable=True)
+    description = Column(String(255), nullable=True)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now, nullable=False)
