@@ -1,13 +1,28 @@
+import os
+import shutil
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from backend.app.core.config import settings
 
+db_url = settings.DATABASE_URL
+if os.environ.get("VERCEL"):
+    tmp_db = "/tmp/trevasq.db"
+    if not os.path.exists(tmp_db):
+        for candidate in ["trevasq.db", "./trevasq.db", "../trevasq.db"]:
+            if os.path.exists(candidate):
+                try:
+                    shutil.copy2(candidate, tmp_db)
+                    break
+                except Exception:
+                    pass
+    db_url = f"sqlite:///{tmp_db}"
+
 connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
+if db_url.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
 
 engine = create_engine(
-    settings.DATABASE_URL,
+    db_url,
     connect_args=connect_args,
     pool_pre_ping=True
 )

@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
     finally:
         db.close()
 
-    if not os.environ.get("TESTING"):
+    if not os.environ.get("TESTING") and not os.environ.get("VERCEL"):
         try:
             start_scheduler()
         except Exception as e:
@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    if not os.environ.get("TESTING"):
+    if not os.environ.get("TESTING") and not os.environ.get("VERCEL"):
         shutdown_scheduler()
 
 lifespan_handler = None if os.environ.get("TESTING") == "true" else lifespan
