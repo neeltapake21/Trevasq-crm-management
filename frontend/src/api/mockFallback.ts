@@ -475,6 +475,33 @@ export const handleMockFallback = (url: string, method: string, data?: any) => {
 
   // 9. Inquiries
   if (normalized.startsWith('/inquiries')) {
+    if (method.toLowerCase() === 'post') {
+      const prodSlug = data?.product_slug || '';
+      let prodName = 'General Quantum Solutions Inquiry';
+      if (prodSlug.includes('qguard')) prodName = 'QGuard';
+      else if (prodSlug.includes('cybersecurity')) prodName = 'Quantum Cybersecurity';
+      else if (prodSlug.includes('readiness')) prodName = 'Quantum Readiness Assessment';
+      else if (prodSlug.includes('signature')) prodName = 'Quantum Digital Signature';
+      else if (prodSlug.includes('encryption')) prodName = 'Quantum Encryption';
+      else if (prodSlug.includes('hash')) prodName = 'Quantum Hash';
+
+      return {
+        status: 201,
+        data: {
+          id: Date.now(),
+          contact_id: 101,
+          contact_name: data?.full_name || 'Prospect Lead',
+          contact_email: data?.email || 'lead@enterprise.com',
+          product_id: 1,
+          product_name: prodName,
+          source: 'website_inquiry',
+          message: data?.message || 'Inquiry received',
+          consent_given: Boolean(data?.marketing_consent),
+          created_at: new Date().toISOString()
+        }
+      };
+    }
+
     return {
       status: 200,
       data: [
@@ -492,6 +519,35 @@ export const handleMockFallback = (url: string, method: string, data?: any) => {
           created_at: '2026-11-20T10:15:00Z'
         }
       ]
+    };
+  }
+
+  // 9.5. Unsubscribe
+  if (normalized.startsWith('/unsubscribe')) {
+    if (method.toLowerCase() === 'post') {
+      return {
+        status: 200,
+        data: {
+          success: true,
+          scope: data?.scope || 'product',
+          contact_email: 'recipient@enterprise.com',
+          message: data?.scope === 'global'
+            ? 'You have been successfully added to our Global Suppression list. You will receive no further emails from TrevasQ.'
+            : 'You have been unsubscribed from this product mailing list.'
+        }
+      };
+    }
+    return {
+      status: 200,
+      data: {
+        valid: true,
+        contact_name: 'Dr. Aris Thorne',
+        contact_email: 'aris.thorne@novasec.io',
+        product_id: 1,
+        product_name: 'QGuard',
+        is_globally_suppressed: false,
+        is_product_unsubscribed: false
+      }
     };
   }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/client';
 import { 
   Shield, 
   CheckCircle2, 
@@ -20,11 +20,20 @@ interface ProductOption {
   slug: string;
 }
 
+const DEFAULT_PRODUCTS: ProductOption[] = [
+  { id: 1, name: 'QGuard', slug: 'qguard' },
+  { id: 2, name: 'Quantum Cybersecurity', slug: 'quantum-cybersecurity' },
+  { id: 3, name: 'Quantum Readiness Assessment', slug: 'quantum-readiness-assessment' },
+  { id: 4, name: 'Quantum Digital Signature', slug: 'quantum-digital-signature' },
+  { id: 5, name: 'Quantum Encryption', slug: 'quantum-encryption' },
+  { id: 6, name: 'Quantum Hash', slug: 'quantum-hash' },
+];
+
 export const PublicInquiry: React.FC = () => {
   const [searchParams] = useSearchParams();
   const productSlugParam = searchParams.get('product');
 
-  const [products, setProducts] = useState<ProductOption[]>([]);
+  const [products, setProducts] = useState<ProductOption[]>(DEFAULT_PRODUCTS);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<any | null>(null);
@@ -44,12 +53,13 @@ export const PublicInquiry: React.FC = () => {
   });
 
   useEffect(() => {
-    // Fetch products list without requiring auth
-    axios.get('/api/products')
+    // Fetch products list
+    api.get('/products')
       .then(res => {
-        setProducts(res.data);
+        const list = Array.isArray(res.data) ? res.data : DEFAULT_PRODUCTS;
+        setProducts(list);
         if (productSlugParam) {
-          const match = res.data.find((p: any) => p.slug === productSlugParam);
+          const match = list.find((p: any) => p.slug === productSlugParam);
           if (match) {
             setFormData(prev => ({ ...prev, product_slug: match.slug }));
           }
@@ -57,6 +67,7 @@ export const PublicInquiry: React.FC = () => {
       })
       .catch(err => {
         console.warn('Could not load products list publicly', err);
+        setProducts(DEFAULT_PRODUCTS);
       });
   }, [productSlugParam]);
 
@@ -71,7 +82,7 @@ export const PublicInquiry: React.FC = () => {
     setErrorMessage(null);
 
     try {
-      const res = await axios.post('/api/inquiries', {
+      const res = await api.post('/inquiries', {
         full_name: formData.full_name,
         email: formData.email,
         company: formData.company || undefined,
@@ -274,7 +285,7 @@ export const PublicInquiry: React.FC = () => {
                   className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="">General Quantum Solutions Inquiry</option>
-                  {products.map((p) => (
+                  {(Array.isArray(products) && products.length > 0 ? products : DEFAULT_PRODUCTS).map((p) => (
                     <option key={p.id} value={p.slug}>{p.name}</option>
                   ))}
                 </select>

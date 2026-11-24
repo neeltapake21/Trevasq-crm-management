@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/client';
 import { 
   Shield, 
   CheckCircle2, 
@@ -45,7 +45,7 @@ export const PublicUnsubscribe: React.FC = () => {
       return;
     }
 
-    axios.get<VerifyResponse>(`/api/unsubscribe/${token}`)
+    api.get<VerifyResponse>(`/unsubscribe/${token}`)
       .then(res => {
         setVerifyData(res.data);
       })
@@ -63,7 +63,7 @@ export const PublicUnsubscribe: React.FC = () => {
     setError(null);
 
     try {
-      const res = await axios.post(`/api/unsubscribe/${token}`, {
+      const res = await api.post(`/unsubscribe/${token}`, {
         scope: selectedScope,
         reason: reason
       });
