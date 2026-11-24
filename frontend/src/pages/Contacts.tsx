@@ -58,8 +58,8 @@ export const Contacts: React.FC = () => {
         api.get('/contacts', { params }),
         api.get('/products'),
       ]);
-      setContacts(cRes.data);
-      setProducts(pRes.data);
+      setContacts(Array.isArray(cRes.data) ? cRes.data : (cRes.data?.items || []));
+      setProducts(Array.isArray(pRes.data) ? pRes.data : []);
     } catch (err) {
       console.error('Failed to fetch contacts', err);
     } finally {

@@ -35,8 +35,8 @@ export const Dashboard: React.FC = () => {
           api.get('/analytics/overview'),
           api.get('/activity-logs?limit=8'),
         ]);
-        setData(overviewRes.data);
-        setActivities(activityRes.data);
+        setData(overviewRes?.data || null);
+        setActivities(Array.isArray(activityRes?.data) ? activityRes.data : []);
       } catch (err) {
         console.error('Failed to load dashboard data', err);
       } finally {
@@ -220,14 +220,14 @@ export const Dashboard: React.FC = () => {
                     </td>
                   </tr>
                 ) : (
-                  data?.campaign_performance.map((c: any) => (
+                  (data?.campaign_performance || []).map((c: any) => (
                     <tr key={c.id} className="hover:bg-slate-50/50">
                       <td className="px-6 py-3.5 font-medium text-slate-900">
                         <NavLink to={`/campaigns/${c.id}`} className="hover:underline">
                           {c.name}
                         </NavLink>
                       </td>
-                      <td className="px-6 py-3.5 text-slate-600">{c.product}</td>
+                      <td className="px-6 py-3.5 text-slate-600">{c.product || c.product_name}</td>
                       <td className="px-6 py-3.5">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider ${
                           c.status === 'sent' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
@@ -237,8 +237,8 @@ export const Dashboard: React.FC = () => {
                           {c.status}
                         </span>
                       </td>
-                      <td className="px-6 py-3.5 font-semibold text-slate-900">{c.sent}</td>
-                      <td className="px-6 py-3.5 text-slate-600">{c.opens}</td>
+                      <td className="px-6 py-3.5 font-semibold text-slate-900">{c.sent ?? c.sent_count ?? 0}</td>
+                      <td className="px-6 py-3.5 text-slate-600">{c.opens ?? c.open_count ?? 0}</td>
                       <td className="px-6 py-3.5 text-slate-400">{c.created_at}</td>
                     </tr>
                   ))

@@ -25,7 +25,7 @@ export const ActivityLogs: React.FC = () => {
     setLoading(true);
     try {
       const res = await api.get<ActivityLog[]>('/activity-logs?limit=150');
-      setLogs(res.data);
+      setLogs(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Failed to load activity logs', err);
     } finally {

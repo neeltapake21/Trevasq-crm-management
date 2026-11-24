@@ -23,11 +23,12 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Check if the backend is missing (e.g. static preview on Vercel returning 404 or 405, or connection refused)
+    // Check if the backend is missing, returns static 404/405, or fails with a server error in cloud preview
     const isMissingBackend = 
       !error.response || 
       error.response.status === 404 || 
-      error.response.status === 405;
+      error.response.status === 405 ||
+      error.response.status >= 500;
 
     if (isMissingBackend && error.config) {
       const url = error.config.url || '';

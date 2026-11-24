@@ -68,7 +68,7 @@ export const Imports: React.FC = () => {
     setLoadingJobs(true);
     try {
       const res = await api.get<ImportJob[]>('/imports');
-      setJobs(res.data);
+      setJobs(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Failed to load import jobs', err);
     } finally {

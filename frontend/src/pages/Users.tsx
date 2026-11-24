@@ -32,7 +32,7 @@ export const Users: React.FC = () => {
     setLoading(true);
     try {
       const res = await api.get<User[]>('/users');
-      setUsers(res.data);
+      setUsers(Array.isArray(res.data) ? res.data : []);
     } catch (err: any) {
       console.error('Failed to load users', err);
       if (err.response?.status === 403) {

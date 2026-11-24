@@ -36,8 +36,8 @@ export const Campaigns: React.FC = () => {
         api.get<Campaign[]>('/campaigns'),
         api.get<Product[]>('/products')
       ]);
-      setCampaigns(campRes.data);
-      setProducts(prodRes.data);
+      setCampaigns(Array.isArray(campRes.data) ? campRes.data : []);
+      setProducts(Array.isArray(prodRes.data) ? prodRes.data : []);
     } catch (err) {
       console.error('Failed to load campaigns', err);
     } finally {

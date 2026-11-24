@@ -53,11 +53,27 @@ export const Analytics: React.FC = () => {
     fetchAnalytics();
   }, []);
 
-  if (loading || !data) {
+  if (loading) {
     return <div className="p-8 text-center text-slate-500">Calculating analytics from live database...</div>;
   }
 
-  const { kpis, leads_over_time, leads_by_source, subscribers_by_product, campaign_performance, email_delivery_trends, unsubscribe_trends } = data;
+  const kpis = data?.kpis || {
+    total_contacts: 0,
+    new_leads_this_month: 0,
+    active_subscribers: 0,
+    unsubscribed_contacts: 0,
+    globally_suppressed_contacts: 0,
+    total_campaigns: 0,
+    emails_sent: 0,
+    delivered_count: 0,
+    delivery_rate: 100,
+  };
+  const leads_over_time = data?.leads_over_time || [];
+  const leads_by_source = data?.leads_by_source || [];
+  const subscribers_by_product = data?.subscribers_by_product || [];
+  const campaign_performance = data?.campaign_performance || [];
+  const email_delivery_trends = data?.email_delivery_trends || [];
+  const unsubscribe_trends = data?.unsubscribe_trends || [];
 
   return (
     <div className="space-y-6">
@@ -231,7 +247,7 @@ export const Analytics: React.FC = () => {
                 campaign_performance.map((c: any) => (
                   <tr key={c.id} className="hover:bg-slate-50/75 transition text-xs">
                     <td className="py-3 px-4 font-semibold text-slate-900">{c.name}</td>
-                    <td className="py-3 px-4">{c.product_name}</td>
+                    <td className="py-3 px-4">{c.product_name || c.product}</td>
                     <td className="py-3 px-4">
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                         {c.status}

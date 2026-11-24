@@ -21,15 +21,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const fetchUser = async () => {
       const savedToken = localStorage.getItem('trevasq_token');
+      const savedUserStr = localStorage.getItem('trevasq_user');
+      
       if (savedToken) {
+        if (savedUserStr) {
+          try {
+            setUser(JSON.parse(savedUserStr));
+          } catch (e) {}
+        }
         try {
           const res = await api.get('/auth/me');
-          setUser(res.data);
-        } catch (err) {
-          localStorage.removeItem('trevasq_token');
-          localStorage.removeItem('trevasq_user');
-          setUser(null);
-          setToken(null);
+          if (res.data) {
+            setUser(res.data);
+            localStorage.setItem('trevasq_user', JSON.stringify(res.data));
+          }
+        } catch (err: any) {
+          if (err.response?.status === 401) {
+            localStorage.removeItem('trevasq_token');
+            localStorage.removeItem('trevasq_user');
+            setUser(null);
+            setToken(null);
+          }
         }
       }
       setLoading(false);
