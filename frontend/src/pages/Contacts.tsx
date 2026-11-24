@@ -244,7 +244,7 @@ export const Contacts: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1 max-w-xs">
-                        {c.subscriptions.length === 0 ? (
+                        {(!c.subscriptions || c.subscriptions.length === 0) ? (
                           <span className="text-[10px] text-slate-400 italic">None</span>
                         ) : (
                           c.subscriptions.map((s) => (

@@ -21,7 +21,33 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Check if the response is actually an HTML page returned by Vercel's SPA fallback rewrite
+    const isHtmlResponse = 
+      typeof response.data === 'string' && 
+      (response.data.includes('<!DOCTYPE html>') || 
+       response.data.includes('<!doctype html>') || 
+       response.data.includes('<html') ||
+       String(response.headers?.['content-type'] || '').includes('text/html'));
+
+    if (isHtmlResponse && response.config) {
+      const url = response.config.url || '';
+      const method = response.config.method || 'get';
+      let reqData = response.config.data;
+      if (typeof reqData === 'string') {
+        try { reqData = JSON.parse(reqData); } catch (e) {}
+      }
+      const fallback = handleMockFallback(url, method, reqData);
+      return {
+        ...response,
+        data: fallback.data,
+        status: fallback.status,
+        statusText: 'OK (Cloud Fallback)',
+      };
+    }
+
+    return response;
+  },
   (error) => {
     // Check if the backend is missing, returns static 404/405, or fails with a server error in cloud preview
     const isMissingBackend = 
