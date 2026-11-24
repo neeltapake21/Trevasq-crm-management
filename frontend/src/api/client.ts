@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { handleMockFallback } from './mockFallback';
 
 const apiBase = import.meta.env.VITE_API_URL 
   ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
@@ -22,6 +23,30 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Check if the backend is missing (e.g. static preview on Vercel returning 404 or 405, or connection refused)
+    const isMissingBackend = 
+      !error.response || 
+      error.response.status === 404 || 
+      error.response.status === 405;
+
+    if (isMissingBackend && error.config) {
+      const url = error.config.url || '';
+      const method = error.config.method || 'get';
+      let reqData = error.config.data;
+      if (typeof reqData === 'string') {
+        try { reqData = JSON.parse(reqData); } catch (e) {}
+      }
+      
+      const fallback = handleMockFallback(url, method, reqData);
+      return Promise.resolve({
+        data: fallback.data,
+        status: fallback.status,
+        statusText: 'OK (Cloud Fallback)',
+        headers: {},
+        config: error.config,
+      });
+    }
+
     if (error.response && error.response.status === 401) {
       if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/inquiry') && !window.location.pathname.startsWith('/unsubscribe')) {
         localStorage.removeItem('trevasq_token');
