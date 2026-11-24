@@ -2,6 +2,7 @@ import logging
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.config import settings
 from backend.app.core.database import SessionLocal, Base, engine
@@ -93,11 +94,28 @@ def health_check():
         "version": "1.0.0"
     }
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def root():
-    return {
-        "name": "TrevasQ Automated Marketing & Lead Management API",
-        "status": "online",
-        "documentation": "/docs",
-        "version": "1.0.0"
-    }
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>TrevasQ API & Platform</title>
+        <meta http-equiv="refresh" content="0; url=https://trevasq-crm-management-d59m.vercel.app/" />
+        <style>
+            body { font-family: -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #0f172a; color: white; }
+            .card { text-align: center; background: #1e293b; padding: 40px; border-radius: 16px; border: 1px solid #334155; max-width: 450px; }
+            h2 { color: #818cf8; margin-top: 0; }
+            a { color: #6366f1; text-decoration: none; font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h2>TrevasQ Backend API is LIVE!</h2>
+            <p>Redirecting to Frontend Application...</p>
+            <p><a href="https://trevasq-crm-management-d59m.vercel.app/">Click here if not redirected automatically</a></p>
+            <p><a href="/docs" style="color: #94a3b8; font-size: 13px;">View Interactive Swagger API Docs</a></p>
+        </div>
+    </body>
+    </html>
+    """
